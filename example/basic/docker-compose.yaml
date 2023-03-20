@@ -18,6 +18,10 @@ services:
 
   blue_db:
     image: postgres:latest
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -26,9 +30,14 @@ services:
       - "5432:5432"
     volumes:
       - source_db_data:/var/lib/postgresql/data
+      # - ./source-postgres.conf:/etc/postgresql.conf
 
   green_db:
     image: postgres:latest
+    command:
+      - "postgres"
+      - "-c"
+      - "hot_standby=on"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -37,6 +46,7 @@ services:
       - "5433:5432"
     volumes:
       - target_db_data:/var/lib/postgresql/data
+      # - ./target-postgres.conf:/etc/postgresql.conf
 
 volumes:
   source_db_data:
