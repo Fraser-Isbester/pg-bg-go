@@ -33,12 +33,39 @@ func main() {
 	}
 	defer targetDB.Close()
 
-	// Connect & Test Load balancer
-	if cfg.LoadBalancer.Type == "pgcat" {
-		fmt.Printf("insert pgcat logic here")
-	} else {
-		fmt.Printf("error: load balancer type not supported: %s\n", cfg.LoadBalancer.Type)
+	// Configure Source Database for Logical Replication Publishing
+
+	// Configure Target Database for Logical Replication Subscription
+
+	// // Configure Replication object
+	// replication := db.NewReplication(sourceDB, targetDB)
+
+	// gets the database configuration of the Source DB
+	sourceConf, err := db.GetConfig(sourceDB)
+	if err != nil {
+		fmt.Printf("Error getting database config: %v\n", err)
 		return
 	}
+	fmt.Println(sourceConf)
+
+	// gets the database configuration of the target DB
+	targetConf, err := db.GetConfig(targetDB)
+	if err != nil {
+		fmt.Printf("Error getting database config: %v\n", err)
+		return
+	}
+	fmt.Println(targetConf)
+
+	// Assert replication configuration
+	if sourceConf.WALLevel != "logical" {
+		fmt.Printf("WAL Level must be set to 'logical' on the source database. Current value: %s)", sourceConf.WALLevel)
+		return
+	}
+	if targetConf.HotStandby != "on" {
+		fmt.Printf("Hot Standby must be enabled on the target database. Current value: %s)", targetConf.HotStandby)
+		return
+	}
+
+	// Configure Source Publication
 
 }
