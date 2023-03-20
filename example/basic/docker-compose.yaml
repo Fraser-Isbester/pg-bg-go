@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+
+  pgcat:
+    image: ghcr.io/levkk/pgcat:latest
+    depends_on:
+      - blue_db
+      - green_db
+    command:
+      - "pgcat"
+      - "/etc/pgcat/pgcat.toml"
+    volumes:
+      - "${PWD}/pgcat.toml:/etc/pgcat/pgcat.toml"
+    ports:
+      - "6432:6432"
+      - "9930:9930"
+
+  blue_db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - source_db_data:/var/lib/postgresql/data
+
+  green_db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - target_db_data:/var/lib/postgresql/data
+
+volumes:
+  source_db_data:
+  target_db_data:

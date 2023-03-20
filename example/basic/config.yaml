@@ -1,0 +1,20 @@
+# Describes the most basic hot-standby database migration
+# dbs.source: is the "original" active database
+# dbs.target: is the active & online database that pg-bg will migrate consumers to
+# load_balancer: is the *existing* load balancer that proxies existing consumers to the source database
+
+dbs:
+  source:
+    # Direct database connection string (not proxied proxy)
+    connection_string: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+  target:
+    # Direct database connection string (not proxied proxy)
+    connection_string: "postgres://postgres:postgres@localhost:5433/postgres?sslmode=disable"
+
+load_balancer:
+  type: pgcat
+  config:
+    host: localhost
+    admin_user: postgres
+    admin_password: postgres
+    port: 6432
